@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>topsub-demo</artifactId>
+        <groupId>vhnguyen.azuretopicsubscription</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>topic-subscription-connection</artifactId>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.microsoft.azure/azure-servicebus-spring-boot-starter -->
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>azure-servicebus-spring-boot-starter</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+    </dependencies>
+</project>
