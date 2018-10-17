@@ -12,25 +12,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-@SpringBootApplication(scanBasePackages={"topsub.connection", "topsub.config"})
+@SpringBootApplication(scanBasePackages = {"topsub.connection", "topsub.config"})
 public class TopsubDemoApplication implements CommandLineRunner {
 
     @Autowired
     TopSubFactory topSubFactory;
-    TopicClient topicMovie;
-    TopicClient topicMusic;
-    List<SubscriptionClient> movieSubscriptions;
-    List<SubscriptionClient> musicSubscriptions;
+    TopicClient topicClient;
+    SubscriptionClient subscriptionClient;
 
     public static void main(String[] args) {
         SpringApplication.run(TopsubDemoApplication.class, args);
     }
 
     public void init() throws ServiceBusException, InterruptedException {
-        this.topicMovie = topSubFactory.getTopicMovie();
-        this.topicMusic = topSubFactory.getTopicMusic();
-        this.movieSubscriptions = topSubFactory.getSubscriptionsOfTopicMovie();
-        this.musicSubscriptions = topSubFactory.getSubscriptionsOfTopicMusic();
+        this.topicClient = topSubFactory.getTopicClient();
+        this.subscriptionClient = topSubFactory.getSubscriptionClient();
     }
 
     @Override
@@ -40,8 +36,7 @@ public class TopsubDemoApplication implements CommandLineRunner {
     }
 
     private void receiveSubscriptionMessage() throws ServiceBusException, InterruptedException {
-        movieSubscriptions.get(0).registerMessageHandler(new MessageHandler(), new MessageHandlerOptions());
-        movieSubscriptions.get(1).registerMessageHandler(new MessageHandler(), new MessageHandlerOptions());
+        subscriptionClient.registerMessageHandler(new MessageHandler(), new MessageHandlerOptions());
 
     }
 

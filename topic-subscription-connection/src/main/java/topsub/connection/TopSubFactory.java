@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 import topsub.config.TopSubConfig;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class TopSubFactory {
@@ -20,67 +18,31 @@ public class TopSubFactory {
     @Autowired
     private TopSubConfig topSubConfig;
 
-    private TopicClient topicClient1; //movie
-    private TopicClient topicClient2; //music
+    private TopicClient topicClient;
 
-    private SubscriptionClient subscriptionClient1;
-    private SubscriptionClient subscriptionClient2;
-    private SubscriptionClient subscriptionClient3;
-    private SubscriptionClient subscriptionClient4;
+    private SubscriptionClient subscriptionClient;
 
     @PostConstruct
     public void init() throws ServiceBusException, InterruptedException {
-        topicClient1 = new TopicClient(new ConnectionStringBuilder(topSubConfig.getConnectionString(), topSubConfig.getTopic1()));
-        topicClient2 = new TopicClient(new ConnectionStringBuilder(topSubConfig.getConnectionString(), topSubConfig.getTopic2()));
+        topicClient = new TopicClient(new ConnectionStringBuilder(topSubConfig.getConnectionString(), topSubConfig.getTopic()));
 
-        subscriptionClient1 = new SubscriptionClient(new ConnectionStringBuilder(topSubConfig.getConnectionString(), topSubConfig.getTopic1()
-                + "/subscriptions/" + topSubConfig.getTopic1Subscription1()), ReceiveMode.PEEKLOCK);
-
-        subscriptionClient2 = new SubscriptionClient(new ConnectionStringBuilder(topSubConfig.getConnectionString(), topSubConfig.getTopic1()
-                + "/subscriptions/" + topSubConfig.getTopic1Subscription2()), ReceiveMode.PEEKLOCK);
-
-        subscriptionClient3 = new SubscriptionClient(new ConnectionStringBuilder(topSubConfig.getConnectionString(), topSubConfig.getTopic2()
-                + "/subscriptions/" + topSubConfig.getTopic2Subscription1()), ReceiveMode.PEEKLOCK);
-
-        subscriptionClient4 = new SubscriptionClient(new ConnectionStringBuilder(topSubConfig.getConnectionString(), topSubConfig.getTopic2()
-                + "/subscriptions/" + topSubConfig.getTopic2Subscription1()), ReceiveMode.PEEKLOCK);
+        subscriptionClient = new SubscriptionClient(new ConnectionStringBuilder(topSubConfig.getConnectionString(), topSubConfig.getTopic()
+                + "/subscriptions/" + topSubConfig.getTopicSubscription()), ReceiveMode.PEEKLOCK);
     }
 
     @Bean
-    public TopicClient getTopicMovie() throws ServiceBusException, InterruptedException {
-        if (this.topicClient1 == null) {
+    public TopicClient getTopicClient() throws ServiceBusException, InterruptedException {
+        if (this.topicClient == null) {
             this.init();
         }
-        return topicClient1;
+        return topicClient;
     }
 
     @Bean
-    public TopicClient getTopicMusic() throws ServiceBusException, InterruptedException {
-        if (this.topicClient2 == null) {
+    public SubscriptionClient getSubscriptionClient() throws ServiceBusException, InterruptedException {
+        if (this.subscriptionClient == null) {
             this.init();
         }
-        return topicClient2;
-    }
-
-    @Bean
-    public List<SubscriptionClient> getSubscriptionsOfTopicMovie() throws ServiceBusException, InterruptedException {
-        if (this.subscriptionClient1 == null || this.subscriptionClient2 == null) {
-            this.init();
-        }
-        List<SubscriptionClient> result = new ArrayList<>();
-        result.add(this.subscriptionClient1);
-        result.add(this.subscriptionClient2);
-        return result;
-    }
-
-    @Bean
-    public List<SubscriptionClient> getSubscriptionsOfTopicMusic() throws ServiceBusException, InterruptedException {
-        if (this.subscriptionClient3 == null || this.subscriptionClient4 == null) {
-            this.init();
-        }
-        List<SubscriptionClient> result = new ArrayList<>();
-        result.add(this.subscriptionClient3);
-        result.add(this.subscriptionClient4);
-        return result;
+        return this.subscriptionClient;
     }
 }
